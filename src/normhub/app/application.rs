@@ -48,10 +48,7 @@ impl Application {
 
         sqlx::migrate!().run(&pool).await?;
 
-        info!(
-            "Norm repository server started on port {}",
-            self.config.port
-        );
+        info!("NormHub server started on port {}", self.config.port);
 
         let router = router::Router::new(pool, &self.config.jwt_secret);
 

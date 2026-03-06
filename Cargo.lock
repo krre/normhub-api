@@ -1232,7 +1232,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "nrs"
+name = "normhub"
 version = "0.1.0"
 dependencies = [
  "axum",

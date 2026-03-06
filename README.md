@@ -1,2 +1,2 @@
-# Norm repository server
-Backend for Norm repositories.
+# NormHub API
+API server for Norm repositories.

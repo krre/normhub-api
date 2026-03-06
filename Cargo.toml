@@ -1,12 +1,12 @@
 [package]
-name = "nrs"
+name = "normhub"
 version = "0.1.0"
 authors = ["Vladimir Zarypov <krre31@gmail.com>"]
 edition = "2024"
 
 [lib]
-name = "nrs"
-path = "src/nrs/lib.rs"
+name = "normhub"
+path = "src/normhub/lib.rs"
 
 [dependencies]
 axum = { version = "0.8.4", features = ["json"] }
