@@ -53,7 +53,7 @@ impl Application {
         let router = router::Router::new(pool, &self.config.jwt_secret);
 
         let listener = tokio::net::TcpListener::bind(&SocketAddr::new(
-            IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)),
+            IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
             self.config.port,
         ))
         .await?;
