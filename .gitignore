@@ -1,3 +1,4 @@
 /.vscode
+/.sqlx
 /target
 .env
