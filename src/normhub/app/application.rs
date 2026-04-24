@@ -48,8 +48,6 @@ impl Application {
 
         sqlx::migrate!().run(&pool).await?;
 
-        info!("NormHub server started on port {}", self.config.port);
-
         let router = router::Router::new(pool, &self.config.jwt_secret);
 
         let listener = tokio::net::TcpListener::bind(&SocketAddr::new(
@@ -58,8 +56,8 @@ impl Application {
         ))
         .await?;
 
+        info!("listening on http://{}", listener.local_addr()?);
         axum::serve(listener, router.into_make_service()).await?;
-
         Ok(())
     }
 
