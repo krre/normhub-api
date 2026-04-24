@@ -1,7 +1,4 @@
-use std::{
-    error::Error,
-    net::{IpAddr, Ipv4Addr, SocketAddr},
-};
+use std::error::Error;
 
 use sqlx;
 use sqlx::postgres::PgPoolOptions;
@@ -15,7 +12,7 @@ use crate::api::router;
 #[derive(Parser, Debug)]
 pub struct Config {
     #[clap(long, env)]
-    port: u16,
+    server_addr: String,
     #[clap(long, env)]
     database_url: String,
     #[clap(long, env)]
@@ -49,12 +46,7 @@ impl Application {
         sqlx::migrate!().run(&pool).await?;
 
         let router = router::Router::new(pool, &self.config.jwt_secret);
-
-        let listener = tokio::net::TcpListener::bind(&SocketAddr::new(
-            IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
-            self.config.port,
-        ))
-        .await?;
+        let listener = tokio::net::TcpListener::bind(&self.config.server_addr).await?;
 
         info!("listening on http://{}", listener.local_addr()?);
         axum::serve(listener, router.into_make_service()).await?;
