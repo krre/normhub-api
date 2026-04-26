@@ -7,7 +7,7 @@ use clap::Parser;
 use tracing::info;
 use tracing_subscriber::{prelude::__tracing_subscriber_SubscriberExt, util::SubscriberInitExt};
 
-use crate::api::router;
+use crate::api;
 
 #[derive(Parser, Debug)]
 pub struct Config {
@@ -45,7 +45,7 @@ impl Application {
 
         sqlx::migrate!().run(&pool).await?;
 
-        let router = router::Router::new(pool, &self.config.jwt_secret);
+        let router = api::endpoint::Router::new(pool, &self.config.jwt_secret);
         let listener = tokio::net::TcpListener::bind(&self.config.server_addr).await?;
 
         info!("listening on http://{}", listener.local_addr()?);

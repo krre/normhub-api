@@ -74,15 +74,14 @@ mod handler {
 
     use std::sync::Arc;
 
-    use axum::{extract::State, Extension, Json};
+    use axum::{Extension, Json, extract::State};
     use sqlx::PgPool;
 
     use crate::{
         api::{
-            self,
+            self, Error, Result,
+            endpoint::JwtExt,
             extract::{AuthUser, ValidPayload},
-            router::JwtExt,
-            Error, Result,
         },
         core::jwt,
     };
