@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use normhub::app::Application;
+use normhub::core::Application;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
