@@ -32,7 +32,7 @@ mod request {
     use validator::Validate;
 
     #[derive(Deserialize, Validate)]
-    pub struct Create {
+    pub struct User {
         #[validate(length(min = 1))]
         pub login: String,
         #[validate(length(min = 1))]
@@ -44,13 +44,13 @@ mod request {
     }
 
     #[derive(Deserialize, Validate)]
-    pub struct Update {
+    pub struct UserFullName {
         #[validate(length(min = 1))]
         pub full_name: String,
     }
 
     #[derive(Deserialize, Validate)]
-    pub struct ChangePassword {
+    pub struct Password {
         #[validate(length(min = 1))]
         pub old_password: String,
         #[validate(length(min = 1))]
@@ -58,7 +58,7 @@ mod request {
     }
 
     #[derive(Deserialize, Validate)]
-    pub struct Login {
+    pub struct LoginUser {
         #[validate(email)]
         pub email: String,
         #[validate(length(min = 1))]
@@ -70,7 +70,7 @@ mod response {
     use serde::Serialize;
 
     #[derive(Serialize)]
-    pub struct Create {
+    pub struct Token {
         pub token: String,
     }
 
@@ -85,8 +85,8 @@ mod response {
 pub async fn create(
     State(pool): State<PgPool>,
     jwt_ext: Extension<Arc<JwtExt>>,
-    ValidPayload(payload): ValidPayload<request::Create>,
-) -> Result<Json<response::Create>> {
+    ValidPayload(payload): ValidPayload<request::User>,
+) -> Result<Json<response::Token>> {
     struct User {
         id: i64,
     }
@@ -106,7 +106,7 @@ pub async fn create(
         Ok(user) => {
             let token = jwt::create_token(user.id as i64, &payload.email, &jwt_ext.secret)
                 .map_err(|e| Error::InternalServerError(format!("cannot create token: {}", e)))?;
-            return Ok(Json(response::Create { token }));
+            return Ok(Json(response::Token { token }));
         }
         Err(error) => match error {
             sqlx::Error::Database(database_error) => {
@@ -124,7 +124,7 @@ pub async fn create(
 pub async fn update(
     State(pool): State<PgPool>,
     AuthUser(user_id): AuthUser,
-    ValidPayload(payload): ValidPayload<request::Update>,
+    ValidPayload(payload): ValidPayload<request::UserFullName>,
 ) -> Result<()> {
     sqlx::query!(
         "UPDATE users SET full_name = $1, updated_at = current_timestamp WHERE id = $2",
@@ -140,7 +140,7 @@ pub async fn update(
 pub async fn change_password(
     State(pool): State<PgPool>,
     AuthUser(user_id): AuthUser,
-    ValidPayload(payload): ValidPayload<request::ChangePassword>,
+    ValidPayload(payload): ValidPayload<request::Password>,
 ) -> Result<()> {
     struct User {
         password: String,
@@ -168,8 +168,8 @@ pub async fn change_password(
 pub async fn login(
     State(pool): State<PgPool>,
     jwt_ext: Extension<Arc<JwtExt>>,
-    payload: axum::extract::Json<request::Login>,
-) -> Result<Json<response::Create>> {
+    payload: axum::extract::Json<request::LoginUser>,
+) -> Result<Json<response::Token>> {
     struct User {
         id: i64,
         password: String,
@@ -192,7 +192,7 @@ pub async fn login(
             let token = jwt::create_token(user.id as i64, &payload.email, &jwt_ext.secret)
                 .map_err(|e| Error::InternalServerError(format!("cannot create token: {}", e)))?;
 
-            return Ok(Json(response::Create { token }));
+            return Ok(Json(response::Token { token }));
         }
         Err(error) => match error {
             sqlx::Error::RowNotFound => {
