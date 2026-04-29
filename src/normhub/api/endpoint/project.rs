@@ -31,7 +31,7 @@ mod request {
     use validator::Validate;
 
     #[derive(Deserialize, Validate)]
-    pub struct Create {
+    pub struct NewProject {
         #[validate(length(min = 1))]
         pub name: String,
         pub target: i16,
@@ -39,7 +39,7 @@ mod request {
     }
 
     #[derive(Deserialize, Validate)]
-    pub struct Update {
+    pub struct Project {
         #[validate(length(min = 1))]
         pub name: String,
         pub description: String,
@@ -51,7 +51,7 @@ mod response {
     use time::OffsetDateTime;
 
     #[derive(Serialize)]
-    pub struct Create {
+    pub struct ProjectId {
         pub id: i64,
     }
 
@@ -69,8 +69,8 @@ mod response {
 pub async fn create(
     State(pool): State<PgPool>,
     AuthUser(user_id): AuthUser,
-    ValidPayload(payload): ValidPayload<request::Create>,
-) -> Result<Json<response::Create>> {
+    ValidPayload(payload): ValidPayload<request::NewProject>,
+) -> Result<Json<response::ProjectId>> {
     struct Project {
         id: i64,
     }
@@ -86,14 +86,14 @@ pub async fn create(
     .fetch_one(&pool)
     .await?;
 
-    Ok(Json(response::Create { id: project.id }))
+    Ok(Json(response::ProjectId { id: project.id }))
 }
 
 pub async fn update(
     Path(id): Path<i64>,
     State(pool): State<PgPool>,
     AuthUser(user_id): AuthUser,
-    ValidPayload(payload): ValidPayload<request::Update>,
+    ValidPayload(payload): ValidPayload<request::Project>,
 ) -> Result<()> {
     sqlx::query!(
         "UPDATE projects SET name = $1, description = $2, updated_at = current_timestamp WHERE id = $3 AND user_id = $4",
