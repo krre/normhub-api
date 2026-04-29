@@ -23,12 +23,12 @@ mod request {
     use validator::Validate;
 
     #[derive(Deserialize, Validate)]
-    pub struct Create {
+    pub struct ModuleId {
         pub module_id: Option<i64>,
     }
 
     #[derive(Deserialize, Validate)]
-    pub struct Update {
+    pub struct Module {
         pub module_id: Option<i64>,
         #[validate(length(min = 1))]
         pub name: String,
@@ -41,7 +41,7 @@ mod response {
     use time::OffsetDateTime;
 
     #[derive(Serialize)]
-    pub struct Create {
+    pub struct NewModule {
         pub id: i64,
         pub name: String,
         pub visibility: i16,
@@ -61,8 +61,8 @@ mod response {
 pub async fn create(
     Path(project_id): Path<i64>,
     State(pool): State<PgPool>,
-    ValidPayload(payload): ValidPayload<request::Create>,
-) -> Result<Json<response::Create>> {
+    ValidPayload(payload): ValidPayload<request::ModuleId>,
+) -> Result<Json<response::NewModule>> {
     struct Module {
         id: i64,
     }
@@ -83,7 +83,7 @@ pub async fn create(
     .fetch_one(&pool)
     .await?;
 
-    Ok(Json(response::Create {
+    Ok(Json(response::NewModule {
         id: module.id,
         name,
         visibility,
@@ -93,7 +93,7 @@ pub async fn create(
 pub async fn update(
     Path(id): Path<i64>,
     State(pool): State<PgPool>,
-    ValidPayload(payload): ValidPayload<request::Update>,
+    ValidPayload(payload): ValidPayload<request::Module>,
 ) -> Result<()> {
     sqlx::query!(
         "UPDATE modules SET module_id = $1, name = $2, visibility = $3, updated_at = current_timestamp WHERE id = $4",
