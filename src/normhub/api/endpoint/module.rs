@@ -1,9 +1,6 @@
-use crate::api::Result;
-use axum::extract::Path;
-use axum::{Json, extract::State};
+use crate::api::{Result, extract::ValidPayload};
+use axum::{Json, extract::Path, extract::State};
 use sqlx::PgPool;
-
-use crate::api::extract::ValidPayload;
 
 pub(crate) mod router {
     use super::*;

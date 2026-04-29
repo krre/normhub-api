@@ -1,7 +1,9 @@
-use axum::body::{Body, Bytes};
-use axum::http::{Request, Response, StatusCode};
-use axum::middleware::Next;
-use axum::response::IntoResponse;
+use axum::{
+    body::{Body, Bytes},
+    http::{Request, Response, StatusCode},
+    middleware::Next,
+    response::IntoResponse,
+};
 use http_body_util::BodyExt;
 
 pub async fn log_body(

@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::{
     api::{self, endpoint::JwtExt},
     core::jwt,
@@ -7,6 +5,7 @@ use crate::{
 use axum::{Extension, RequestPartsExt, extract::FromRequestParts, http::request::Parts};
 use axum_extra::TypedHeader;
 use headers::{Authorization, authorization::Bearer};
+use std::sync::Arc;
 
 pub struct AuthUser(pub i64);
 

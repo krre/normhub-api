@@ -2,12 +2,11 @@ pub mod account;
 pub mod module;
 pub mod project;
 
+use super::middleware::console::log_body;
 use axum::{Extension, middleware, routing::IntoMakeService};
 use sqlx::{Pool, Postgres};
 use std::sync::Arc;
 use tower_http::trace::TraceLayer;
-
-use super::middleware::console::log_body;
 
 pub struct Router {
     axum_router: axum::Router,

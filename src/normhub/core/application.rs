@@ -1,13 +1,9 @@
-use std::error::Error;
-
-use sqlx;
-use sqlx::postgres::PgPoolOptions;
-
+use crate::api;
 use clap::Parser;
+use sqlx::postgres::PgPoolOptions;
+use std::error::Error;
 use tracing::info;
 use tracing_subscriber::{prelude::__tracing_subscriber_SubscriberExt, util::SubscriberInitExt};
-
-use crate::api;
 
 #[derive(Parser, Debug)]
 pub struct Config {

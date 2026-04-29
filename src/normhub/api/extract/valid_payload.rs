@@ -1,8 +1,7 @@
-use axum::{body::Body, extract::FromRequest, http::Request, Json};
+use crate::api;
+use axum::{Json, body::Body, extract::FromRequest, http::Request};
 use serde::de::DeserializeOwned;
 use validator::Validate;
-
-use crate::api;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ValidPayload<T>(pub T);

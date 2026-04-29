@@ -1,16 +1,15 @@
-use axum::extract::Path;
-use axum::{Json, extract::State};
+use crate::api::{
+    Result,
+    extract::{AuthUser, ValidPayload},
+};
+use axum::{Json, extract::Path, extract::State};
 use sqlx::PgPool;
 
-use crate::api::Result;
-use crate::api::extract::{AuthUser, ValidPayload};
-
 pub(crate) mod router {
-    use axum::routing;
-    use sqlx::{Pool, Postgres};
-
     use super::*;
     use crate::api::endpoint;
+    use axum::routing;
+    use sqlx::{Pool, Postgres};
 
     pub fn new(pool: &Pool<Postgres>) -> routing::Router {
         routing::Router::new()

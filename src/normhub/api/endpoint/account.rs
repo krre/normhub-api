@@ -1,13 +1,19 @@
-use std::sync::Arc;
-
+use crate::{
+    api::{
+        self, Error, Result,
+        endpoint::JwtExt,
+        extract::{AuthUser, ValidPayload},
+    },
+    core::jwt,
+};
 use axum::{Extension, Json, extract::State};
 use sqlx::PgPool;
+use std::sync::Arc;
 
 pub(crate) mod router {
+    use super::*;
     use axum::routing;
     use sqlx::{Pool, Postgres};
-
-    use super::*;
 
     pub fn new(pool: &Pool<Postgres>) -> routing::Router {
         routing::Router::new()
@@ -75,15 +81,6 @@ mod response {
         pub email: String,
     }
 }
-
-use crate::{
-    api::{
-        self, Error, Result,
-        endpoint::JwtExt,
-        extract::{AuthUser, ValidPayload},
-    },
-    core::jwt,
-};
 
 pub async fn create(
     State(pool): State<PgPool>,

@@ -1,11 +1,10 @@
+use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation, decode, encode};
+use serde::{Deserialize, Serialize};
+use sqlx::types::time::OffsetDateTime;
 use std::{
     ops::Add,
     time::{Duration, SystemTime},
 };
-
-use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation, decode, encode};
-use serde::{Deserialize, Serialize};
-use sqlx::types::time::OffsetDateTime;
 use thiserror::Error;
 
 #[derive(Debug, Serialize, Deserialize)]
