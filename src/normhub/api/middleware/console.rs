@@ -6,7 +6,7 @@ use axum::{
 };
 use http_body_util::BodyExt;
 
-pub async fn log_body(
+pub async fn log_request_response(
     req: Request<axum::body::Body>,
     next: Next,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {

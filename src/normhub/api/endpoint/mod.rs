@@ -2,7 +2,7 @@ pub mod account;
 pub mod module;
 pub mod project;
 
-use super::middleware::console::log_body;
+use super::middleware::console::log_request_response;
 use axum::{Extension, middleware, routing::IntoMakeService};
 use sqlx::{Pool, Postgres};
 use std::sync::Arc;
@@ -27,7 +27,7 @@ impl Router {
             .nest("/projects", project::router::new(&pool))
             .layer(TraceLayer::new_for_http())
             .layer(Extension(jwt_ext))
-            .layer(middleware::from_fn(log_body));
+            .layer(middleware::from_fn(log_request_response));
 
         Self {
             axum_router: router,
